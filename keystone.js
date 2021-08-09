@@ -52,9 +52,6 @@ export default auth.withAuth(
     db: {
       adapter: "prisma_postgresql",
       url: process.env.DATABASE_URL || "",
-      /*url:
-        "postgres://hugo85_admin:bambino0101@hugo85.heliohost.us/hugo85_bambino" ||
-        "",*/
     },
     extendGraphqlSchema,
     ui: {
