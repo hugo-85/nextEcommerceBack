@@ -1,0 +1,52 @@
+datasource postgresql {
+  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int?
+  product   Product? @relation("CartItemproduct", fields: [productId], references: [id])
+  productId Int?     @map("product")
+  user      User?    @relation("CartItemuser", fields: [userId], references: [id])
+  userId    Int?     @map("user")
+
+  @@index([productId])
+  @@index([userId])
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  name     String?
+  email    String?    @unique
+  password String?
+  products Product[]  @relation("Productuser")
+  cart     CartItem[] @relation("CartItemuser")
+}
+
+model Product {
+  id                    Int           @id @default(autoincrement())
+  name                  String?
+  description           String?
+  price                 Int?
+  photo                 ProductImage? @relation("Productphoto", fields: [photoId], references: [id])
+  photoId               Int?          @map("photo")
+  user                  User?         @relation("Productuser", fields: [userId], references: [id])
+  userId                Int?          @map("user")
+  from_CartItem_product CartItem[]    @relation("CartItemproduct")
+
+  @@index([photoId])
+  @@index([userId])
+}
+
+model ProductImage {
+  id      Int      @id @default(autoincrement())
+  image   Json?
+  altText String?
+  product Product? @relation("Productphoto")
+}
